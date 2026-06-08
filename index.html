@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeepInSkin — Science for Skin</title>
+  <link rel="icon" href="./favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Inter:wght@400;500&family=Fira+Code:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg:        #F5F7FA;
+      --color-surface:   #E8ECF2;
+      --color-border:    #B8C2D4;
+      --color-mid:       #536A8A;
+      --color-primary:   #2B3F5C;
+      --color-deep:      #17243A;
+      --color-accent:    #3D7BBF;
+      --color-accent-lt: #C5DAEA;
+      --font-display:    'Outfit', sans-serif;
+      --font-body:       'Inter', sans-serif;
+      --font-mono:       'Fira Code', monospace;
+      --radius-card:     12px;
+      --radius-btn:      8px;
+      --shadow-card:     0 4px 24px rgba(0,0,0,0.07);
+      --transition:      200ms ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--color-bg);
+      color: var(--color-primary);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ─── ANIMATION BASE ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ─── NAVIGATION ─── */
+    #navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 68px;
+      background: rgba(245,247,250,0.85);
+      border-bottom: 1px solid transparent;
+      transition: backdrop-filter var(--transition), border-color var(--transition), background var(--transition);
+    }
+    #navbar.scrolled {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-color: var(--color-border);
+      background: rgba(245,247,250,0.72);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo img {
+      height: 38px;
+      width: auto;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-primary);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color var(--transition);
+    }
+    .nav-links a:hover { color: var(--color-accent); }
+    .nav-links a.btn-nav {
+      background: var(--color-accent);
+      color: #fff;
+      padding: 7px 18px;
+      border-radius: var(--radius-btn);
+      transition: background var(--transition), transform var(--transition);
+    }
+    .nav-links a.btn-nav:hover { background: #2d65a0; transform: translateY(-1px); }
+    .nav-hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--color-primary); margin: 5px 0;
+      transition: var(--transition);
+    }
+    @media (max-width: 768px) {
+      #navbar { padding: 0 20px; }
+      .nav-hamburger { display: block; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 68px; left: 0; right: 0;
+        background: var(--color-bg);
+        border-bottom: 1px solid var(--color-border);
+        flex-direction: column;
+        padding: 20px;
+        gap: 18px;
+      }
+      .nav-links.open { display: flex; }
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      background: var(--color-deep);
+      padding: 80px 40px 100px;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(61,123,191,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 56px;
+    }
+    .hero-text {
+      text-align: center;
+      max-width: 700px;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-accent);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .hero-headline {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      color: #fff;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero-subline {
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      color: var(--color-accent-lt);
+      font-weight: 400;
+      opacity: 0.9;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+      max-width: 860px;
+    }
+    .hero-tile {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 0.95;
+      background: #0a0f1a;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .hero-tile img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    .hero-tile:hover img { transform: scale(1.04); }
+    .hero-tile-label {
+      position: absolute;
+      bottom: 10px; left: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.85);
+      background: rgba(0,0,0,0.45);
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.08em;
+      backdrop-filter: blur(4px);
+    }
+    .hero-tile-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    @media (max-width: 768px) {
+      #hero { padding: 60px 20px 70px; }
+      .hero-grid { gap: 8px; }
+    }
+
+    /* ─── SECTION SCAFFOLD ─── */
+    section { width: 100%; }
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 96px 40px;
+    }
+    @media (max-width: 768px) {
+      .section-inner { padding: 64px 20px; }
+    }
+    .section-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--color-accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .section-headline {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      color: var(--color-primary);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .section-subline {
+      font-size: 1rem;
+      color: var(--color-mid);
+      max-width: 560px;
+      margin-bottom: 0;
+    }
+
+    /* ─── ABOUT ─── */
+    #about { background: var(--color-bg); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 64px;
+      align-items: start;
+    }
+    .about-body p {
+      font-size: 0.97rem;
+      color: var(--color-primary);
+      line-height: 1.75;
+      margin-bottom: 1.1rem;
+    }
+    .about-body p:last-child { margin-bottom: 0; }
+    .about-body a {
+      color: var(--color-accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(61,123,191,0.35);
+      transition: border-color var(--transition), color var(--transition);
+    }
+    .about-body a:hover { color: #2d65a0; border-color: #2d65a0; }
+    .about-stats { display: flex; flex-direction: column; gap: 16px; }
+    .stat-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 22px 24px;
+      box-shadow: var(--shadow-card);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+    }
+    .stat-card-title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--color-primary);
+      margin-bottom: 5px;
+    }
+    .stat-card-desc {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--color-mid);
+    }
+    .stat-card-icon {
+      width: 32px; height: 32px;
+      background: var(--color-accent-lt);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 12px;
+    }
+    .stat-card-icon svg { width: 16px; height: 16px; stroke: var(--color-accent); }
+    @media (max-width: 1024px) {
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .about-stats { flex-direction: row; flex-wrap: wrap; }
+      .stat-card { flex: 1; min-width: 200px; }
+    }
+    @media (max-width: 768px) {
+      .about-stats { flex-direction: column; }
+    }
+
+    /* ─── HOW IT WORKS ─── */
+    #how { background: var(--color-surface); }
+    .how-inner { text-align: center; }
+    .how-inner .section-subline { margin: 0 auto 56px; }
+    .how-steps {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0;
+      position: relative;
+    }
+    .how-step {
+      flex: 1;
+      max-width: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 16px;
+      position: relative;
+    }
+    .how-step-connector {
+      flex: 1;
+      max-width: 100px;
+      height: 2px;
+      border-top: 2px dashed var(--color-border);
+      margin-top: 36px;
+      align-self: flex-start;
+    }
+    .how-step-icon {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--color-bg);
+      border: 2px solid var(--color-border);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      position: relative;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .how-step:hover .how-step-icon {
+      border-color: var(--color-accent);
+      background: var(--color-accent-lt);
+    }
+    .how-step-num {
+      position: absolute;
+      top: -6px; right: -6px;
+      width: 22px; height: 22px;
+      background: var(--color-accent);
+      border-radius: 50%;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .how-step-icon svg { width: 28px; height: 28px; stroke: var(--color-accent); fill: none; stroke-width: 1.5; }
+    .how-step-title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--color-primary);
+      margin-bottom: 6px;
+    }
+    .how-step-desc { font-size: 0.875rem; color: var(--color-mid); }
+    @media (max-width: 768px) {
+      .how-steps { flex-direction: column; align-items: center; gap: 32px; }
+      .how-step-connector { display: none; }
+    }
+
+    /* ─── PACKAGES ─── */
+    #packages { background: var(--color-bg); }
+    .packages-header { margin-bottom: 32px; }
+    .toxicity-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--color-accent-lt);
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 8px 16px;
+      border-radius: 999px;
+      margin-bottom: 40px;
+      border: 1px solid rgba(61,123,191,0.2);
+    }
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .pkg-card {
+      background: var(--color-surface);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition), transform var(--transition), box-shadow var(--transition);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      user-select: none;
+    }
+    .pkg-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-card);
+      border-color: var(--color-mid);
+    }
+    .pkg-card.selected {
+      border-color: var(--color-accent);
+      background: rgba(197,218,234,0.25);
+      box-shadow: 0 4px 24px rgba(61,123,191,0.15);
+    }
+    .pkg-check {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: opacity var(--transition), transform var(--transition);
+    }
+    .pkg-card.selected .pkg-check { opacity: 1; transform: scale(1); }
+    .pkg-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--color-accent-lt);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px;
+      font-size: 1.2rem;
+    }
+    .pkg-name {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--color-primary);
+      margin-bottom: 8px;
+    }
+    .pkg-desc {
+      font-size: 0.82rem;
+      color: var(--color-mid);
+      line-height: 1.55;
+      margin-bottom: 14px;
+      flex: 1;
+    }
+    .pkg-markers {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+    .pkg-marker {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--color-mid);
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .pkg-modes {
+      display: flex;
+      gap: 6px;
+    }
+    .pkg-mode-btn {
+      flex: 1;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg);
+      color: var(--color-mid);
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+    }
+    .pkg-mode-btn.active {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+    .pkg-mode-btn:not(.active):hover { border-color: var(--color-accent); color: var(--color-accent); }
+    .pkg-mode-btn[data-mode="confocal"] .tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--color-deep);
+      color: #e0e8f0;
+      font-size: 0.68rem;
+      font-family: var(--font-body);
+      padding: 8px 12px;
+      border-radius: 6px;
+      width: 240px;
+      text-align: center;
+      line-height: 1.4;
+      z-index: 100;
+      pointer-events: none;
+      white-space: normal;
+    }
+    .pkg-mode-btn[data-mode="confocal"] .tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%; left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: var(--color-deep);
+    }
+    .pkg-mode-btn[data-mode="confocal"]:hover .tooltip { display: block; }
+    .packages-summary {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .summary-text {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--color-mid);
+    }
+    .summary-text span { color: var(--color-accent); font-weight: 500; }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--color-accent);
+      color: #fff;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 13px 28px;
+      border-radius: var(--radius-btn);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+    .btn-primary:hover {
+      background: #2d65a0;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(61,123,191,0.3);
+    }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--color-accent);
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 12px 28px;
+      border-radius: var(--radius-btn);
+      border: 2px solid var(--color-accent);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all var(--transition);
+    }
+    .btn-outline:hover {
+      background: var(--color-accent);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    @media (max-width: 1024px) {
+      .packages-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .packages-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── TIMELINE ─── */
+    #timeline {
+      background: var(--color-surface);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #timeline.open { max-height: 800px; }
+    .timeline-result {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 28px;
+      margin-top: 28px;
+      display: none;
+    }
+    .timeline-result.visible { display: block; }
+    .timeline-rows { display: flex; flex-direction: column; gap: 0; }
+    .timeline-row {
+      display: flex;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--color-border);
+      gap: 20px;
+    }
+    .timeline-row:last-child { border-bottom: none; }
+    .timeline-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--color-border);
+      flex-shrink: 0;
+    }
+    .timeline-dot.active { background: var(--color-accent); }
+    .timeline-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-mid);
+      width: 180px;
+      flex-shrink: 0;
+    }
+    .timeline-date {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--color-primary);
+    }
+    .timeline-warning {
+      background: rgba(255, 193, 7, 0.12);
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: #7a5c00;
+      margin-top: 14px;
+      display: none;
+    }
+    .timeline-warning.visible { display: block; }
+    .date-input-wrap { margin-bottom: 4px; }
+    .date-input-wrap label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--color-mid);
+      margin-bottom: 8px;
+      letter-spacing: 0.06em;
+    }
+    .date-input-wrap input[type="date"] {
+      background: var(--color-bg);
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-btn);
+      padding: 10px 14px;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--color-primary);
+      outline: none;
+      transition: border-color var(--transition);
+      width: 260px;
+      max-width: 100%;
+    }
+    .date-input-wrap input[type="date"]:focus { border-color: var(--color-accent); }
+
+    /* ─── DEMO REPORT ─── */
+    #report { background: var(--color-bg); }
+    .report-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 40px;
+      max-width: 560px;
+      margin: 0 auto;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+    }
+    .report-icon {
+      width: 64px; height: 64px;
+      background: var(--color-accent-lt);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+    }
+    .report-icon svg { width: 32px; height: 32px; stroke: var(--color-accent); fill: none; stroke-width: 1.5; }
+    .report-title {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 1.2rem;
+      color: var(--color-primary);
+      margin-bottom: 10px;
+    }
+    .report-desc {
+      font-size: 0.875rem;
+      color: var(--color-mid);
+      margin-bottom: 28px;
+      line-height: 1.65;
+    }
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--color-accent);
+      color: #fff;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 13px 28px;
+      border-radius: var(--radius-btn);
+      border: none;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+      min-width: 200px;
+    }
+    .btn-download:hover { background: #2d65a0; transform: translateY(-1px); }
+    .btn-download:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+    .download-error {
+      font-size: 0.82rem;
+      color: #c0392b;
+      margin-top: 10px;
+      display: none;
+    }
+    .download-error.visible { display: block; }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── TEAM ─── */
+    #team { background: var(--color-surface); }
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .team-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 28px 24px;
+      box-shadow: var(--shadow-card);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .team-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+    }
+    .team-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--color-accent-lt);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--color-accent);
+      margin-bottom: 16px;
+      border: 2px solid rgba(61,123,191,0.2);
+    }
+    .team-name {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 1rem;
+      color: var(--color-primary);
+      margin-bottom: 3px;
+    }
+    .team-role {
+      font-size: 0.8rem;
+      color: var(--color-mid);
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+    .team-bio {
+      font-size: 0.855rem;
+      color: var(--color-primary);
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+    .team-link {
+      font-size: 0.8rem;
+      color: var(--color-accent);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(61,123,191,0.3);
+      transition: border-color var(--transition);
+    }
+    .team-link:hover { border-color: var(--color-accent); }
+    @media (max-width: 900px) {
+      .team-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .team-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── CONTACT ─── */
+    #contact { background: var(--color-bg); }
+    .contact-inner { padding-bottom: 80px; }
+    .iframe-wrap {
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-card);
+      background: #fff;
+    }
+    .iframe-wrap iframe {
+      display: block;
+      width: 100%;
+      border: none;
+    }
+
+    /* ─── LEGAL ─── */
+    #legal {
+      background: var(--color-deep);
+      padding: 32px 40px;
+    }
+    .legal-text {
+      max-width: 1200px;
+      margin: 0 auto;
+      font-size: 0.78rem;
+      color: var(--color-border);
+      font-family: var(--font-body);
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--color-deep);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 40px;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .footer-logo img { height: 32px; filter: brightness(0) invert(1); opacity: 0.85; }
+    .footer-tagline {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      font-family: var(--font-body);
+    }
+    .footer-links {
+      display: flex; gap: 28px; list-style: none;
+    }
+    .footer-links a {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .footer-links a:hover { color: var(--color-accent-lt); }
+    .footer-copy {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.35);
+    }
+    @media (max-width: 768px) {
+      footer { padding: 32px 20px; }
+      .footer-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+      .footer-links { flex-wrap: wrap; gap: 16px; }
+      #legal { padding: 24px 20px; }
+    }
+
+    /* ─── SECTION HEADING GROUPING ─── */
+    .section-head { margin-bottom: 48px; }
+
+    /* ─── MISC UTILS ─── */
+    .text-center { text-align: center; }
+    .mt-32 { margin-top: 32px; }
+    .mt-24 { margin-top: 24px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════════ -->
+<nav id="navbar" role="navigation" aria-label="Main navigation">
+  <a href="#" class="nav-logo" aria-label="DeepInSkin home">
+    <img src="./logo-transparent.png" alt="DeepInSkin logo">
+  </a>
+  <button class="nav-hamburger" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks" role="list">
+    <li><a href="#about">About</a></li>
+    <li><a href="#how">Services</a></li>
+    <li><a href="#packages">Packages</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#report" class="btn-nav">Download Report</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════ -->
+<section id="hero" aria-label="Hero">
+  <div class="hero-inner">
+    <div class="hero-text reveal">
+      <span class="hero-eyebrow">University of Bologna · IRCCS Rizzoli</span>
+      <h1 class="hero-headline">Beauty Backed<br>by Science</h1>
+      <p class="hero-subline">Advanced 3D biological testing for cosmetic active ingredients</p>
+    </div>
+    <div class="hero-grid reveal reveal-delay-2" aria-label="Confocal microscopy time-lapse">
+      <div class="hero-tile">
+        <img src="./EsosomiT0.png" alt="Confocal microscopy T0 — 0 hours">
+        <div class="hero-tile-overlay"></div>
+        <span class="hero-tile-label">T0 — 0h</span>
+      </div>
+      <div class="hero-tile">
+        <img src="./EsosomiT1.png" alt="Confocal microscopy T1 — 6 hours">
+        <div class="hero-tile-overlay"></div>
+        <span class="hero-tile-label">T1 — 6h</span>
+      </div>
+      <div class="hero-tile">
+        <img src="./EsosomiT2.png" alt="Confocal microscopy T2 — 24 hours">
+        <div class="hero-tile-overlay"></div>
+        <span class="hero-tile-label">T2 — 24h</span>
+      </div>
+      <div class="hero-tile">
+        <img src="./EsosomiT3.png" alt="Confocal microscopy T3 — 48 hours">
+        <div class="hero-tile-overlay"></div>
+        <span class="hero-tile-label">T3 — 48h</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     ABOUT
+═══════════════════════════════════════════════ -->
+<section id="about">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <span class="section-tag">About DeepInSkin</span>
+      <h2 class="section-headline">Built in the lab.<br>Designed for industry.</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-body reveal reveal-delay-1">
+        <p>
+          DeepInSkin is a spin-off from the University of Bologna's Biomedical Science,
+          Technologies and Nanobiotechnology Lab and the IRCCS Rizzoli Orthopaedic Institute.
+        </p>
+        <p>
+          We provide advanced efficacy testing services for cosmetic active ingredients through
+          <a href="https://pubmed.ncbi.nlm.nih.gov/40695170/" target="_blank" rel="noopener noreferrer">MOSAIC</a>,
+          our patented platform for 3D spheroid generation, live imaging, and biological analysis.
+        </p>
+        <p>
+          Unlike traditional approaches, MOSAIC enables non-destructive, time-lapse 3D evaluation
+          of active ingredients, allowing us to monitor biological responses over time while preserving
+          tissue integrity.
+        </p>
+        <p>
+          Our team has extensive expertise in exosome research, supported by
+          <a href="https://pubmed.ncbi.nlm.nih.gov/33445656/" target="_blank" rel="noopener noreferrer">scientific publications</a>
+          and the development of
+          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8400229/" target="_blank" rel="noopener noreferrer">innovative proprietary testing protocols</a>
+          specifically designed for next-generation cosmetic actives.
+        </p>
+        <p>
+          By combining advanced 3D biology, live imaging, and quantitative analysis, we help cosmetic
+          brands, ingredient manufacturers, and R&D laboratories generate robust efficacy data,
+          accelerate product development, and strengthen scientific claim substantiation.
+        </p>
+      </div>
+      <div class="about-stats reveal reveal-delay-2">
+        <div class="stat-card">
+          <div class="stat-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9z"/><path d="M12 7v5l3 3"/></svg>
+          </div>
+          <div class="stat-card-title">3D Spheroid Platform</div>
+          <div class="stat-card-desc">Non-destructive, time-lapse analysis</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path d="M9 12l2 2 4-4"/><path d="M12 3a9 9 0 100 18A9 9 0 0012 3z"/></svg>
+          </div>
+          <div class="stat-card-title">Cruelty-Free Testing</div>
+          <div class="stat-card-desc">100% in vitro — EU compliant</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h7M7 16h5"/></svg>
+          </div>
+          <div class="stat-card-title">Claim Substantiation</div>
+          <div class="stat-card-desc">Data-backed reports for EU/B2B</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     HOW IT WORKS
+═══════════════════════════════════════════════ -->
+<section id="how">
+  <div class="section-inner how-inner">
+    <div class="section-head reveal">
+      <span class="section-tag">Process</span>
+      <h2 class="section-headline">Choose your package. Ship your actives.<br>Download your report.</h2>
+      <p class="section-subline">Results delivered in 1–3 business days.</p>
+    </div>
+    <div class="how-steps">
+      <div class="how-step reveal reveal-delay-1">
+        <div class="how-step-icon">
+          <span class="how-step-num">1</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </div>
+        <div class="how-step-title">Select Package</div>
+        <div class="how-step-desc">Choose one or more testing panels</div>
+      </div>
+      <div class="how-step-connector"></div>
+      <div class="how-step reveal reveal-delay-2">
+        <div class="how-step-icon">
+          <span class="how-step-num">2</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        </div>
+        <div class="how-step-title">Ship Your Sample</div>
+        <div class="how-step-desc">Send your active ingredient to our lab</div>
+      </div>
+      <div class="how-step-connector"></div>
+      <div class="how-step reveal reveal-delay-3">
+        <div class="how-step-icon">
+          <span class="how-step-num">3</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16v-4m0 0V8m0 4h4m-4 0H8"/><path d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4"/><path d="M7 10l5 5 5-5"/></svg>
+        </div>
+        <div class="how-step-title">Download Report</div>
+        <div class="how-step-desc">Receive quantitative data and claim support</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     PACKAGES
+═══════════════════════════════════════════════ -->
+<section id="packages">
+  <div class="section-inner">
+    <div class="section-head packages-header reveal">
+      <span class="section-tag">Testing Panels</span>
+      <h2 class="section-headline">Select Your Testing Panels</h2>
+      <p class="section-subline">Toxicity screening is always included at no extra cost.</p>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <div class="toxicity-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+        Default: Cytotoxicity &amp; Viability — always included
+      </div>
+    </div>
+    <div class="packages-grid reveal reveal-delay-2" id="packagesGrid">
+
+      <!-- ANTI-AGING -->
+      <div class="pkg-card" data-pkg="anti-aging" role="checkbox" aria-checked="false" tabindex="0">
+        <span class="pkg-check" aria-hidden="true">✓</span>
+        <div class="pkg-icon">🧬</div>
+        <div class="pkg-name">Anti-Aging</div>
+        <div class="pkg-desc">Evaluate collagen synthesis, elastin production, and extracellular matrix remodeling</div>
+        <div class="pkg-markers">
+          <span class="pkg-marker">Elastin</span>
+          <span class="pkg-marker">Collagen III</span>
+          <span class="pkg-marker">ECM</span>
+          <span class="pkg-marker">Fibroblast activity</span>
+        </div>
+        <div class="pkg-modes" onclick="event.stopPropagation()">
+          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Standard</button>
+          <button class="pkg-mode-btn" data-mode="confocal" aria-label="Molecular / Confocal mode">
+            Molecular / Confocal
+            <span class="tooltip" role="tooltip">Includes confocal imaging and molecular biomarker quantification (ELISA/qPCR)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ANTI-INFLAMMATORY -->
+      <div class="pkg-card" data-pkg="anti-inflammatory" role="checkbox" aria-checked="false" tabindex="0">
+        <span class="pkg-check" aria-hidden="true">✓</span>
+        <div class="pkg-icon">🛡️</div>
+        <div class="pkg-name">Anti-Inflammatory</div>
+        <div class="pkg-desc">Assess the ingredient's ability to modulate key inflammatory mediators</div>
+        <div class="pkg-markers">
+          <span class="pkg-marker">IL-6</span>
+          <span class="pkg-marker">COX-2</span>
+          <span class="pkg-marker">TNF-α</span>
+        </div>
+        <div class="pkg-modes" onclick="event.stopPropagation()">
+          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Standard</button>
+          <button class="pkg-mode-btn" data-mode="confocal" aria-label="Molecular / Confocal mode">
+            Molecular / Confocal
+            <span class="tooltip" role="tooltip">Includes confocal imaging and molecular biomarker quantification (ELISA/qPCR)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ANTI-OXIDATION -->
+      <div class="pkg-card" data-pkg="anti-oxidation" role="checkbox" aria-checked="false" tabindex="0">
+        <span class="pkg-check" aria-hidden="true">✓</span>
+        <div class="pkg-icon">⚡</div>
+        <div class="pkg-name">Anti-Oxidation</div>
+        <div class="pkg-desc">Measure reduction of reactive oxygen species in a 3D biological model</div>
+        <div class="pkg-markers">
+          <span class="pkg-marker">ROS reduction</span>
+        </div>
+        <div class="pkg-modes" onclick="event.stopPropagation()">
+          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Standard</button>
+          <button class="pkg-mode-btn" data-mode="confocal" aria-label="Molecular / Confocal mode">
+            Molecular / Confocal
+            <span class="tooltip" role="tooltip">Includes confocal imaging and molecular biomarker quantification (ELISA/qPCR)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- EXOSOME -->
+      <div class="pkg-card" data-pkg="exosome" role="checkbox" aria-checked="false" tabindex="0">
+        <span class="pkg-check" aria-hidden="true">✓</span>
+        <div class="pkg-icon">🔬</div>
+        <div class="pkg-name">Exosome Package</div>
+        <div class="pkg-desc">Dedicated panel for delivery systems and next-generation vesicular actives</div>
+        <div class="pkg-markers">
+          <span class="pkg-marker">Uptake efficiency</span>
+          <span class="pkg-marker">Penetration depth</span>
+        </div>
+        <div class="pkg-modes" onclick="event.stopPropagation()">
+          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Standard</button>
+          <button class="pkg-mode-btn" data-mode="confocal" aria-label="Molecular / Confocal mode">
+            Molecular / Confocal
+            <span class="tooltip" role="tooltip">Includes confocal imaging and molecular biomarker quantification (ELISA/qPCR)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="packages-summary reveal reveal-delay-3" id="packagesSummary">
+      <div class="summary-text" id="summaryText">Selected: <span id="selectedList">none</span> &nbsp;|&nbsp; Mode: <span id="modeList">—</span></div>
+    </div>
+
+    <div class="reveal reveal-delay-3" style="text-align:center;">
+      <button class="btn-primary" id="btnTimeline" onclick="openTimeline()" aria-controls="timeline">
+        Check Delivery Timeline
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     TIMELINE
+═══════════════════════════════════════════════ -->
+<section id="timeline" aria-label="Delivery timeline calculator">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="section-tag">Logistics</span>
+      <h2 class="section-headline">Estimate Your Report Delivery Date</h2>
+    </div>
+    <div class="date-input-wrap">
+      <label for="shippingDate">Select your shipping date</label>
+      <input type="date" id="shippingDate" name="shippingDate" aria-label="Select shipping date">
+    </div>
+    <div class="timeline-warning" id="timelineWarning">
+      ⚠️ Note: shipping on non-working days will be processed the following Monday.
+    </div>
+    <div class="timeline-result" id="timelineResult" aria-live="polite">
+      <div class="timeline-rows" id="timelineRows"></div>
+    </div>
+    <div class="mt-32" style="text-align:center;">
+      <a href="#contact" class="btn-outline">
+        Proceed to Request Analysis →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     DEMO REPORT
+═══════════════════════════════════════════════ -->
+<section id="report">
+  <div class="section-inner text-center">
+    <div class="section-head reveal">
+      <span class="section-tag">Documentation</span>
+      <h2 class="section-headline">See What Your Report Looks Like</h2>
+      <p class="section-subline" style="margin: 0 auto;">Verify your claims and compare your results against our collected benchmark data.</p>
+    </div>
+    <div class="report-card reveal reveal-delay-2">
+      <div class="report-icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+          <polyline points="14,2 14,8 20,8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10,9 9,9 8,9"/>
+        </svg>
+      </div>
+      <div class="report-title">Demo Analysis Report</div>
+      <p class="report-desc">
+        Full example output including dose-response curves, imaging data,
+        statistical analysis, and claim substantiation documentation.
+      </p>
+      <button class="btn-download" id="btnDownload" onclick="downloadReport()" aria-label="Download Demo Report">
+        <span class="spinner" id="downloadSpinner"></span>
+        <svg id="downloadIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Demo Report
+      </button>
+      <div class="download-error" id="downloadError" role="alert"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     TEAM
+═══════════════════════════════════════════════ -->
+<section id="team">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <span class="section-tag">Scientific Team</span>
+      <h2 class="section-headline">Scientific Team</h2>
+      <p class="section-subline">Grounded in academic research. Built for industrial application.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal reveal-delay-1">
+        <div class="team-avatar" aria-hidden="true">MVL</div>
+        <div class="team-name">Maria Veronica Lipreri</div>
+        <div class="team-role">Researcher — IRCCS Rizzoli Orthopaedic Institute</div>
+        <p class="team-bio">
+          Biomedical Engineer (MSc, Politecnico di Milano, 2017) and researcher at the Biomedical
+          Science, Technologies and Nanobiotechnology Lab. Expertise in 3D tissue models,
+          microfluidics, nanomaterials, and immunofluorescence, with 8 publications and 66 citations.
+        </p>
+        <a href="https://www.ior.it/ricerca-e-innovazione/ing-maria-veronica-lipreri" target="_blank" rel="noopener noreferrer" class="team-link">View Profile →</a>
+      </div>
+      <div class="team-card reveal reveal-delay-2">
+        <div class="team-avatar" aria-hidden="true">NB</div>
+        <div class="team-name">Nicola Baldini</div>
+        <div class="team-role">Full Professor — University of Bologna</div>
+        <p class="team-bio">
+          Full Professor at the Department of Biomedical and Neuromotor Sciences, University of
+          Bologna, and Director of the IRCCS Rizzoli laboratory. Former Research Fellow at Harvard
+          Medical School and Massachusetts General Hospital (1989–1990). Expert in oncology,
+          orthopaedics, and bone metastases, with over 18,000 citations.
+        </p>
+        <a href="https://www.unibo.it/sitoweb/nicola.baldini5" target="_blank" rel="noopener noreferrer" class="team-link">View Profile →</a>
+      </div>
+      <div class="team-card reveal reveal-delay-3">
+        <div class="team-avatar" aria-hidden="true">SA</div>
+        <div class="team-name">Sofia Avnet</div>
+        <div class="team-role">Associate Professor — University of Bologna</div>
+        <p class="team-bio">
+          Biotechnologist and Associate Professor with research at IRCCS Rizzoli since 2001. AIRC-funded
+          researcher specializing in exosome biology, sarcoma, osteosarcoma, and acid tumor
+          microenvironments. Key contributor to the platform's exosome testing methodology.
+        </p>
+        <a href="https://www.unibo.it/sitoweb/sofia.avnet3" target="_blank" rel="noopener noreferrer" class="team-link">View Profile →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     CONTACT FORM
+═══════════════════════════════════════════════ -->
+<section id="contact">
+  <div class="section-inner contact-inner">
+    <div class="section-head reveal">
+      <span class="section-tag">Request Analysis</span>
+      <h2 class="section-headline">Start Your Testing Request</h2>
+      <p class="section-subline">Complete the form below and our team will be in touch within one business day.</p>
+    </div>
+    <div class="iframe-wrap reveal reveal-delay-1">
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLSe4U2gkDTqpkOthH3srTNJ7y8qaPAHwKSpsVinvGvNCXm122w/viewform?embedded=true"
+        width="100%"
+        height="860"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        title="DeepInSkin Analysis Request Form"
+        loading="lazy">
+        Loading form…
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     LEGAL NOTICE
+═══════════════════════════════════════════════ -->
+<div id="legal" role="contentinfo" aria-label="Legal notice">
+  <p class="legal-text">
+    Analysis results are retained by DeepInSkin and may be used for internal benchmarking and aggregate
+    research purposes in fully anonymized form. By submitting samples, clients acknowledge this policy.
+  </p>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <img src="./logo-transparent.png" alt="DeepInSkin">
+      </div>
+      <span class="footer-tagline">A spin-off of the University of Bologna &amp; IRCCS Rizzoli</span>
+    </div>
+    <ul class="footer-links" role="list">
+      <li><a href="#about">About</a></li>
+      <li><a href="#how">Services</a></li>
+      <li><a href="#packages">Packages</a></li>
+      <li><a href="#team">Team</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="footer-copy">&copy; 2025 DeepInSkin. All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════ -->
+<script>
+  // ── NAV SCROLL ──────────────────────────────────
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  // ── HAMBURGER ───────────────────────────────────
+  const navToggle = document.getElementById('navToggle');
+  const navLinks  = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // ── INTERSECTION OBSERVER ────────────────────────
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer  = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // ── PACKAGE CARDS ────────────────────────────────
+  const pkgCards = document.querySelectorAll('.pkg-card');
+  pkgCards.forEach(card => {
+    card.addEventListener('click', () => toggleCard(card));
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard(card); }
+    });
+    card.querySelectorAll('.pkg-mode-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        card.querySelectorAll('.pkg-mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateSummary();
+      });
+    });
+  });
+
+  function toggleCard(card) {
+    const selected = card.classList.toggle('selected');
+    card.setAttribute('aria-checked', selected);
+    updateSummary();
+  }
+
+  function updateSummary() {
+    const nameMap = {
+      'anti-aging': 'Anti-Aging',
+      'anti-inflammatory': 'Anti-Inflammatory',
+      'anti-oxidation': 'Anti-Oxidation',
+      'exosome': 'Exosome'
+    };
+    const selected = [...document.querySelectorAll('.pkg-card.selected')];
+    const selectedNames = selected.map(c => nameMap[c.dataset.pkg] || c.dataset.pkg);
+    const modes = selected.map(c => {
+      const activeBtn = c.querySelector('.pkg-mode-btn.active');
+      return activeBtn && activeBtn.dataset.mode === 'confocal' ? 'Molecular/Confocal' : 'Standard';
+    });
+
+    const sl = document.getElementById('selectedList');
+    const ml = document.getElementById('modeList');
+    sl.textContent = selectedNames.length ? selectedNames.join(', ') : 'none';
+    ml.textContent = modes.length ? [...new Set(modes)].join(' + ') : '—';
+  }
+
+  // ── TIMELINE ────────────────────────────────────
+  function openTimeline() {
+    const tl = document.getElementById('timeline');
+    tl.classList.add('open');
+    setTimeout(() => tl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+  }
+
+  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  function isWorkingDay(date) {
+    const d = date.getDay();
+    return d !== 0 && d !== 5 && d !== 6; // not Sun, Fri, Sat
+  }
+
+  function addBusinessDays(date, n) {
+    const d = new Date(date);
+    let added = 0;
+    while (added < n) {
+      d.setDate(d.getDate() + 1);
+      if (isWorkingDay(d)) added++;
+    }
+    return d;
+  }
+
+  function nextWorkingDay(date) {
+    const d = new Date(date);
+    while (!isWorkingDay(d)) d.setDate(d.getDate() + 1);
+    return d;
+  }
+
+  function formatDate(d) {
+    return `${DAYS[d.getDay()]}, ${d.getDate()} ${d.toLocaleString('en-GB', { month: 'long' })} ${d.getFullYear()}`;
+  }
+
+  document.getElementById('shippingDate').addEventListener('change', function () {
+    const val = this.value;
+    if (!val) return;
+    const [y,m,day] = val.split('-').map(Number);
+    const shipping  = new Date(y, m - 1, day);
+    const warning   = document.getElementById('timelineWarning');
+    const result    = document.getElementById('timelineResult');
+    const rows      = document.getElementById('timelineRows');
+
+    const nonWorking = !isWorkingDay(shipping);
+    warning.classList.toggle('visible', nonWorking);
+
+    const effectiveShipping = nonWorking ? nextWorkingDay(shipping) : shipping;
+    const arrival    = addBusinessDays(effectiveShipping, 1);
+    const analysisStart = arrival;
+    const reportDelivery = addBusinessDays(analysisStart, 3);
+
+    const steps = [
+      { label: 'Shipping date',          date: effectiveShipping, active: false },
+      { label: 'Estimated lab arrival',  date: arrival,           active: false },
+      { label: 'Analysis start',         date: analysisStart,     active: false },
+      { label: 'Report delivery',        date: reportDelivery,    active: true  }
+    ];
+
+    rows.innerHTML = steps.map(s => `
+      <div class="timeline-row">
+        <div class="timeline-dot${s.active ? ' active' : ''}"></div>
+        <div class="timeline-label">${s.label}</div>
+        <div class="timeline-date">${formatDate(s.date)}</div>
+      </div>
+    `).join('');
+
+    result.classList.add('visible');
+  });
+
+  // ── DEMO REPORT DOWNLOAD ─────────────────────────
+  function downloadReport() {
+    const btn     = document.getElementById('btnDownload');
+    const spinner = document.getElementById('downloadSpinner');
+    const icon    = document.getElementById('downloadIcon');
+    const errEl   = document.getElementById('downloadError');
+
+    btn.disabled   = true;
+    spinner.style.display = 'block';
+    icon.style.display    = 'none';
+    errEl.classList.remove('visible');
+
+    fetch('https://deepinskeen.altervista.org/download.php')
+      .then(res => {
+        if (!res.ok) throw new Error(`Server error ${res.status}`);
+        const disp = res.headers.get('Content-Disposition');
+        const nameMatch = disp && disp.match(/filename="?([^";\n]+)"?/);
+        const filename  = nameMatch ? nameMatch[1] : 'DeepInSkin_Demo_Report.pdf';
+        return res.blob().then(blob => ({ blob, filename }));
+      })
+      .then(({ blob, filename }) => {
+        const url = URL.createObjectURL(blob);
+        const a   = document.createElement('a');
+        a.href    = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      })
+      .catch(err => {
+        errEl.textContent = 'Download unavailable. Please contact us directly.';
+        errEl.classList.add('visible');
+      })
+      .finally(() => {
+        btn.disabled = false;
+        spinner.style.display = 'none';
+        icon.style.display    = 'block';
+      });
+  }
+</script>
+</body>
+</html>
