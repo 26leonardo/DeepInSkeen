@@ -81,7 +81,7 @@
       text-decoration: none;
     }
     .nav-logo img {
-      height: 38px;
+      height: 150px;
       width: auto;
     }
     .nav-links {
@@ -299,7 +299,7 @@
     .stat-card-title {
       font-family: var(--font-display);
       font-weight: 500;
-      font-size: 0.95rem;
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
       color: var(--color-primary);
       margin-bottom: 5px;
     }
@@ -873,9 +873,10 @@
       gap: 4px;
     }
     .footer-logo {
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; gap: 5px;
     }
-    .footer-logo img { height: 32px; filter: brightness(0) invert(1); opacity: 0.85; }
+    .footer-logo img { height: 128px;  } 
+    /* filter: brightness(0) invert(1); opacity: 0.85; */
     .footer-tagline {
       font-size: 0.75rem;
       color: rgba(255,255,255,0.4);
@@ -918,7 +919,7 @@
 ═══════════════════════════════════════════════ -->
 <nav id="navbar" role="navigation" aria-label="Main navigation">
   <a href="#" class="nav-logo" aria-label="DeepInSkin home">
-    <img src="./logo-transparent.png" alt="DeepInSkin logo">
+    <img src="./logo-full-trans.png" alt="DeepInSkin logo">
   </a>
   <button class="nav-hamburger" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
     <span></span><span></span><span></span>
@@ -1094,7 +1095,7 @@
       <!-- ANTI-AGING -->
       <div class="pkg-card" data-pkg="anti-aging" role="checkbox" aria-checked="false" tabindex="0">
         <span class="pkg-check" aria-hidden="true">✓</span>
-        <div class="pkg-icon">🧬</div>
+        <div class="pkg-icon"><img width="32" height="32" src="https://img.icons8.com/led/32/dna-helix.png" alt="dna-helix"/></div>
         <div class="pkg-name">Anti-Aging</div>
         <div class="pkg-desc">Evaluate collagen synthesis, elastin production, and extracellular matrix remodeling</div>
         <div class="pkg-markers">
@@ -1104,9 +1105,9 @@
           <span class="pkg-marker">Fibroblast activity</span>
         </div>
         <div class="pkg-modes" onclick="event.stopPropagation()">
-          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Standard</button>
+          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Confocal</button>
           <button class="pkg-mode-btn" data-mode="confocal" aria-label="Molecular / Confocal mode">
-            Molecular / Confocal
+            + Molecular 
             <span class="tooltip" role="tooltip">Includes confocal imaging and molecular biomarker quantification (ELISA/qPCR)</span>
           </button>
         </div>
@@ -1115,7 +1116,7 @@
       <!-- ANTI-INFLAMMATORY -->
       <div class="pkg-card" data-pkg="anti-inflammatory" role="checkbox" aria-checked="false" tabindex="0">
         <span class="pkg-check" aria-hidden="true">✓</span>
-        <div class="pkg-icon">🛡️</div>
+        <div class="pkg-icon"><img width="32" height="32" src="https://img.icons8.com/hieroglyphs/32/shield.png" alt="shield"/></div>
         <div class="pkg-name">Anti-Inflammatory</div>
         <div class="pkg-desc">Assess the ingredient's ability to modulate key inflammatory mediators</div>
         <div class="pkg-markers">
@@ -1124,9 +1125,9 @@
           <span class="pkg-marker">TNF-α</span>
         </div>
         <div class="pkg-modes" onclick="event.stopPropagation()">
-          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Standard</button>
+          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Confocal</button>
           <button class="pkg-mode-btn" data-mode="confocal" aria-label="Molecular / Confocal mode">
-            Molecular / Confocal
+            + Molecular 
             <span class="tooltip" role="tooltip">Includes confocal imaging and molecular biomarker quantification (ELISA/qPCR)</span>
           </button>
         </div>
@@ -1135,16 +1136,16 @@
       <!-- ANTI-OXIDATION -->
       <div class="pkg-card" data-pkg="anti-oxidation" role="checkbox" aria-checked="false" tabindex="0">
         <span class="pkg-check" aria-hidden="true">✓</span>
-        <div class="pkg-icon">⚡</div>
+        <div class="pkg-icon"><img width="32" height="32" src="https://img.icons8.com/external-outline-black-m-oki-orlando/32/external-oxidation-chemistry-outline-black-m-oki-orlando.png" alt="external-oxidation-chemistry-outline-black-m-oki-orlando"/></div>
         <div class="pkg-name">Anti-Oxidation</div>
         <div class="pkg-desc">Measure reduction of reactive oxygen species in a 3D biological model</div>
         <div class="pkg-markers">
           <span class="pkg-marker">ROS reduction</span>
         </div>
         <div class="pkg-modes" onclick="event.stopPropagation()">
-          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Standard</button>
+          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Confocal</button>
           <button class="pkg-mode-btn" data-mode="confocal" aria-label="Molecular / Confocal mode">
-            Molecular / Confocal
+            + Molecular
             <span class="tooltip" role="tooltip">Includes confocal imaging and molecular biomarker quantification (ELISA/qPCR)</span>
           </button>
         </div>
@@ -1153,7 +1154,7 @@
       <!-- EXOSOME -->
       <div class="pkg-card" data-pkg="exosome" role="checkbox" aria-checked="false" tabindex="0">
         <span class="pkg-check" aria-hidden="true">✓</span>
-        <div class="pkg-icon">🔬</div>
+        <div class="pkg-icon"><img width="32" height="32" src="https://img.icons8.com/external-dreamstale-lineal-dreamstale/32/external-science-science-dreamstale-lineal-dreamstale-3.png" alt="external-science-science-dreamstale-lineal-dreamstale-3"/></div>
         <div class="pkg-name">Exosome Package</div>
         <div class="pkg-desc">Dedicated panel for delivery systems and next-generation vesicular actives</div>
         <div class="pkg-markers">
@@ -1161,9 +1162,9 @@
           <span class="pkg-marker">Penetration depth</span>
         </div>
         <div class="pkg-modes" onclick="event.stopPropagation()">
-          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Standard</button>
+          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Confocal</button>
           <button class="pkg-mode-btn" data-mode="confocal" aria-label="Molecular / Confocal mode">
-            Molecular / Confocal
+            + Molecular
             <span class="tooltip" role="tooltip">Includes confocal imaging and molecular biomarker quantification (ELISA/qPCR)</span>
           </button>
         </div>
@@ -1337,7 +1338,7 @@
   <div class="footer-inner">
     <div class="footer-brand">
       <div class="footer-logo">
-        <img src="./logo-transparent.png" alt="DeepInSkin">
+        <img src="./logo-full.png" alt="DeepInSkin">
       </div>
       <span class="footer-tagline">A spin-off of the University of Bologna &amp; IRCCS Rizzoli</span>
     </div>
@@ -1501,44 +1502,78 @@
   });
 
   // ── DEMO REPORT DOWNLOAD ─────────────────────────
-  function downloadReport() {
+  // function downloadReport() {
+  //   const btn     = document.getElementById('btnDownload');
+  //   const spinner = document.getElementById('downloadSpinner');
+  //   const icon    = document.getElementById('downloadIcon');
+  //   const errEl   = document.getElementById('downloadError');
+
+  //   btn.disabled   = true;
+  //   spinner.style.display = 'block';
+  //   icon.style.display    = 'none';
+  //   errEl.classList.remove('visible');
+
+  //   fetch('https://deepinskeen.altervista.org/download.php')
+  //     .then(res => {
+  //       if (!res.ok) throw new Error(`Server error ${res.status}`);
+  //       const disp = res.headers.get('Content-Disposition');
+  //       const nameMatch = disp && disp.match(/filename="?([^";\n]+)"?/);
+  //       const filename  = nameMatch ? nameMatch[1] : 'DeepInSkin_Demo_Report.pdf';
+  //       return res.blob().then(blob => ({ blob, filename }));
+  //     })
+  //     .then(({ blob, filename }) => {
+  //       const url = URL.createObjectURL(blob);
+  //       const a   = document.createElement('a');
+  //       a.href    = url;
+  //       a.download = filename;
+  //       document.body.appendChild(a);
+  //       a.click();
+  //       a.remove();
+  //       URL.revokeObjectURL(url);
+  //     })
+  //     .catch(err => {
+  //       errEl.textContent = 'Download unavailable. Please contact us directly.';
+  //       errEl.classList.add('visible');
+  //     })
+  //     .finally(() => {
+  //       btn.disabled = false;
+  //       spinner.style.display = 'none';
+  //       icon.style.display    = 'block';
+  //     });
+  // }
+function downloadReport() {
     const btn     = document.getElementById('btnDownload');
     const spinner = document.getElementById('downloadSpinner');
     const icon    = document.getElementById('downloadIcon');
     const errEl   = document.getElementById('downloadError');
 
-    btn.disabled   = true;
+    // Trigger the loading UI
+    btn.disabled = true;
     spinner.style.display = 'block';
-    icon.style.display    = 'none';
+    icon.style.display = 'none';
     errEl.classList.remove('visible');
 
-    fetch('https://deepinskeen.altervista.org/download.php')
-      .then(res => {
-        if (!res.ok) throw new Error(`Server error ${res.status}`);
-        const disp = res.headers.get('Content-Disposition');
-        const nameMatch = disp && disp.match(/filename="?([^";\n]+)"?/);
-        const filename  = nameMatch ? nameMatch[1] : 'DeepInSkin_Demo_Report.pdf';
-        return res.blob().then(blob => ({ blob, filename }));
-      })
-      .then(({ blob, filename }) => {
-        const url = URL.createObjectURL(blob);
-        const a   = document.createElement('a');
-        a.href    = url;
-        a.download = filename;
+    // Use setTimeout to simulate a quick "processing" delay for the user interface, 
+    // then trigger the download of the local static file.
+    setTimeout(() => {
+      try {
+        const a = document.createElement('a');
+        // Make sure you upload a file named exactly this to your GitHub repository
+        a.href = './DeepInSkin_Demo_Report.pdf'; 
+        a.download = 'DeepInSkin_Demo_Report.pdf';
         document.body.appendChild(a);
         a.click();
         a.remove();
-        URL.revokeObjectURL(url);
-      })
-      .catch(err => {
+      } catch (err) {
         errEl.textContent = 'Download unavailable. Please contact us directly.';
         errEl.classList.add('visible');
-      })
-      .finally(() => {
+      } finally {
+        // Reset the UI
         btn.disabled = false;
         spinner.style.display = 'none';
-        icon.style.display    = 'block';
-      });
+        icon.style.display = 'block';
+      }
+    }, 800); // 800 millisecond delay
   }
 </script>
 </body>
