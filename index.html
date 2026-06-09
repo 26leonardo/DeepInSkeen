@@ -145,7 +145,7 @@
       pointer-events: none;
     }
     .hero-inner {
-      max-width: 1200px;
+      max-width: 100%;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
@@ -183,14 +183,14 @@
     }
     .hero-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      grid-template-columns: repeat(4, 1fr); /* Imposta 4 colonne orizzontali */
+      gap: 10px;
       width: 100%;
-      max-width: 860px;
+      /* max-width: 2000px;  */
     }
     .hero-tile {
       position: relative;
-      border-radius: 10px;
+      /* border-radius: 10px; */
       overflow: hidden;
       aspect-ratio: 0.95;
       background: #0a0f1a;
@@ -207,8 +207,8 @@
       position: absolute;
       bottom: 10px; left: 12px;
       font-family: var(--font-mono);
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.85);
+      font-size: 1rem;
+      color: rgb(255, 255, 255);
       background: rgba(0,0,0,0.45);
       padding: 3px 8px;
       border-radius: 4px;
@@ -221,9 +221,11 @@
       background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 50%);
       pointer-events: none;
     }
-    @media (max-width: 768px) {
-      #hero { padding: 60px 20px 70px; }
-      .hero-grid { gap: 8px; }
+    @media (max-width: 900px) {
+      .hero-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 700px;
+      }
     }
 
     /* ─── SECTION SCAFFOLD ─── */
@@ -965,9 +967,7 @@
 <section id="hero" aria-label="Hero">
   <div class="hero-inner">
     <div class="hero-text reveal">
-      <span class="hero-eyebrow">University of Bologna · IRCCS Rizzoli</span>
-      <h1 class="hero-headline">Beauty Backed<br>by Science</h1>
-      <p class="hero-subline">Advanced 3D biological testing for cosmetic active ingredients</p>
+      <h1 class="hero-headline">Beauty Backed by Science</h1>
     </div>
     <div class="hero-grid reveal reveal-delay-2" aria-label="Confocal microscopy time-lapse">
       <div class="hero-tile">
@@ -990,6 +990,10 @@
         <div class="hero-tile-overlay"></div>
         <span class="hero-tile-label">T3 — 48h</span>
       </div>
+    </div>
+    <div class="hero-text reveal">
+      <p class="hero-subline">Advanced 3D biological testing for cosmetic active ingredients</p>
+      <span class="hero-eyebrow">Spin-off University of Bologna · IRCCS Rizzoli</span>
     </div>
   </div>
 </section>
@@ -1533,46 +1537,7 @@
   });
 
   // ── DEMO REPORT DOWNLOAD ─────────────────────────
-  // function downloadReport() {
-  //   const btn     = document.getElementById('btnDownload');
-  //   const spinner = document.getElementById('downloadSpinner');
-  //   const icon    = document.getElementById('downloadIcon');
-  //   const errEl   = document.getElementById('downloadError');
-
-  //   btn.disabled   = true;
-  //   spinner.style.display = 'block';
-  //   icon.style.display    = 'none';
-  //   errEl.classList.remove('visible');
-
-  //   fetch('https://deepinskeen.altervista.org/download.php')
-  //     .then(res => {
-  //       if (!res.ok) throw new Error(`Server error ${res.status}`);
-  //       const disp = res.headers.get('Content-Disposition');
-  //       const nameMatch = disp && disp.match(/filename="?([^";\n]+)"?/);
-  //       const filename  = nameMatch ? nameMatch[1] : 'DeepInSkin_Demo_Report.pdf';
-  //       return res.blob().then(blob => ({ blob, filename }));
-  //     })
-  //     .then(({ blob, filename }) => {
-  //       const url = URL.createObjectURL(blob);
-  //       const a   = document.createElement('a');
-  //       a.href    = url;
-  //       a.download = filename;
-  //       document.body.appendChild(a);
-  //       a.click();
-  //       a.remove();
-  //       URL.revokeObjectURL(url);
-  //     })
-  //     .catch(err => {
-  //       errEl.textContent = 'Download unavailable. Please contact us directly.';
-  //       errEl.classList.add('visible');
-  //     })
-  //     .finally(() => {
-  //       btn.disabled = false;
-  //       spinner.style.display = 'none';
-  //       icon.style.display    = 'block';
-  //     });
-  // }
-function downloadReport() {
+  function downloadReport() {
     const btn     = document.getElementById('btnDownload');
     const spinner = document.getElementById('downloadSpinner');
     const icon    = document.getElementById('downloadIcon');
