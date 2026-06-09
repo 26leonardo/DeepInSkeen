@@ -413,12 +413,14 @@
       display: flex;
       flex-direction: column;
       position: relative;
+      z-index: 1;
       user-select: none;
     }
     .pkg-card:hover {
       transform: translateY(-3px);
       box-shadow: var(--shadow-card);
       border-color: var(--color-mid);
+      z-index: 10;
     }
     .pkg-card.selected {
       border-color: var(--color-accent);
@@ -1465,7 +1467,7 @@
 
   function isWorkingDay(date) {
     const d = date.getDay();
-    return d !== 0 && d !== 5 && d !== 6;
+    return d !== 0  && d !== 6;
   }
 
   function addBusinessDays(date, n) {
