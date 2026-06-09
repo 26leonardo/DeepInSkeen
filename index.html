@@ -133,28 +133,66 @@
     /* ─── HERO ─── */
     #hero {
       background: var(--color-deep);
-      padding: 80px 40px 100px;
       position: relative;
       overflow: hidden;
     }
-    #hero::before {
-      content: '';
+
+    /* ─── HERO BANNER (full-width image + hover overlay) ─── */
+    .hero-banner {
+      position: relative;
+      width: 100%;
+      display: block;
+      overflow: hidden;
+      cursor: default;
+      line-height: 0; /* remove inline gap below image */
+    }
+    .hero-banner img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: filter 0.45s ease;
+      will-change: filter;
+    }
+    .hero-banner-overlay {
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse at 70% 50%, rgba(61,123,191,0.08) 0%, transparent 65%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.45s ease;
+      background: rgba(10, 16, 30, 0.45);
       pointer-events: none;
     }
-    .hero-inner {
-      max-width: 100%;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 56px;
+    .hero-banner:hover img {
+      filter: blur(5px) brightness(0.72);
     }
-    .hero-text {
+    .hero-banner:hover .hero-banner-overlay {
+      opacity: 1;
+    }
+    .hero-banner-slogan {
+      font-family: var(--font-display);
+      font-weight: 300;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      color: #fff;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
       text-align: center;
-      max-width: 700px;
+      text-shadow: 0 2px 32px rgba(0,0,0,0.55);
+      padding: 0 24px;
+      transform: translateY(10px);
+      transition: transform 0.45s ease;
+    }
+    .hero-banner:hover .hero-banner-slogan {
+      transform: translateY(0);
+    }
+
+    /* ─── HERO SUB-TEXT ─── */
+    .hero-sub {
+      padding: 36px 40px 44px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
     }
     .hero-eyebrow {
       font-family: var(--font-mono);
@@ -162,17 +200,8 @@
       color: var(--color-accent);
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      margin-bottom: 20px;
+      margin-top: 12px;
       display: block;
-    }
-    .hero-headline {
-      font-family: var(--font-display);
-      font-weight: 300;
-      font-size: clamp(2.4rem, 5vw, 3.8rem);
-      color: #fff;
-      letter-spacing: -0.02em;
-      line-height: 1.15;
-      margin-bottom: 20px;
     }
     .hero-subline {
       font-family: var(--font-body);
@@ -181,51 +210,8 @@
       font-weight: 400;
       opacity: 0.9;
     }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr); /* Imposta 4 colonne orizzontali */
-      gap: 10px;
-      width: 100%;
-      /* max-width: 2000px;  */
-    }
-    .hero-tile {
-      position: relative;
-      /* border-radius: 10px; */
-      overflow: hidden;
-      aspect-ratio: 0.95;
-      background: #0a0f1a;
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-    .hero-tile img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.5s ease;
-    }
-    .hero-tile:hover img { transform: scale(1.04); }
-    .hero-tile-label {
-      position: absolute;
-      bottom: 10px; left: 12px;
-      font-family: var(--font-mono);
-      font-size: 1rem;
-      color: rgb(255, 255, 255);
-      background: rgba(0,0,0,0.45);
-      padding: 3px 8px;
-      border-radius: 4px;
-      letter-spacing: 0.08em;
-      backdrop-filter: blur(4px);
-    }
-    .hero-tile-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 50%);
-      pointer-events: none;
-    }
-    @media (max-width: 900px) {
-      .hero-grid {
-        grid-template-columns: repeat(2, 1fr);
-        max-width: 700px;
-      }
+    @media (max-width: 768px) {
+      .hero-sub { padding: 24px 20px 32px; }
     }
 
     /* ─── SECTION SCAFFOLD ─── */
@@ -507,12 +493,24 @@
       transition: all var(--transition);
       position: relative;
     }
-    .pkg-mode-btn.active {
+    /* Confocal is permanently active — always styled blue, non-interactive */
+    .pkg-mode-btn[data-mode="standard"] {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+      cursor: default;
+    }
+    /* Molecular: active state when toggled on */
+    .pkg-mode-btn[data-mode="confocal"].active {
       background: var(--color-primary);
       color: #fff;
       border-color: var(--color-primary);
     }
-    .pkg-mode-btn:not(.active):hover { border-color: var(--color-accent); color: var(--color-accent); }
+    .pkg-mode-btn[data-mode="confocal"]:not(.active):hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+    /* Tooltip for Molecular button */
     .pkg-mode-btn[data-mode="confocal"] .tooltip {
       display: none;
       position: absolute;
@@ -827,37 +825,32 @@
     #contact { background: var(--color-bg); }
     .contact-inner { padding-bottom: 80px; }
     .iframe-wrap {
-      max-width: 800px; /* Limita la larghezza massima su PC */
-      width: 100%; /* Si restringe fluidamente sui telefoni */
-      margin: 0 auto; /* Centra il form al centro della pagina */
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
       border-radius: var(--radius-card);
       overflow: hidden;
       border: 1px solid var(--color-border);
       box-shadow: var(--shadow-card);
       background: #fff;
     }
-    
     .form-header {
       background: var(--color-deep);
-      padding: 32px 20px; /* Padding ridotto per schermi piccoli */
+      padding: 32px 20px;
       text-align: center;
       border-bottom: 4px solid var(--color-accent);
     }
-
     .form-header img {
       height: 60px;
       border-radius: calc(var(--radius-card) - 5px);
       margin-bottom: 16px;
     }
-
     .form-header h3 {
       font-family: var(--font-display);
       color: #fff;
-      /* Usa clamp per scalare il testo dinamicamente in base allo schermo */
-      font-size: clamp(1.2rem, 4vw, 1.4rem); 
+      font-size: clamp(1.2rem, 4vw, 1.4rem);
       margin-bottom: 8px;
     }
-
     .form-header p {
       color: var(--color-accent-lt);
       font-size: 0.9rem;
@@ -903,8 +896,7 @@
     .footer-logo {
       display: flex; align-items: center; gap: 5px;
     }
-    .footer-logo img { height: 128px;  } 
-    /* filter: brightness(0) invert(1); opacity: 0.85; */
+    .footer-logo img { height: 128px; }
     .footer-tagline {
       font-size: 0.75rem;
       color: rgba(255,255,255,0.4);
@@ -931,10 +923,8 @@
       #legal { padding: 24px 20px; }
     }
 
-    /* ─── SECTION HEADING GROUPING ─── */
-    .section-head { margin-bottom: 48px; }
-
     /* ─── MISC UTILS ─── */
+    .section-head { margin-bottom: 48px; }
     .text-center { text-align: center; }
     .mt-32 { margin-top: 32px; }
     .mt-24 { margin-top: 24px; }
@@ -965,37 +955,22 @@
      HERO
 ═══════════════════════════════════════════════ -->
 <section id="hero" aria-label="Hero">
-  <div class="hero-inner">
-    <div class="hero-text reveal">
-      <h1 class="hero-headline">Beauty Backed by Science</h1>
-    </div>
-    <div class="hero-grid reveal reveal-delay-2" aria-label="Confocal microscopy time-lapse">
-      <div class="hero-tile">
-        <img src="./EsosomiT0.png" alt="Confocal microscopy T0 — 0 hours">
-        <div class="hero-tile-overlay"></div>
-        <span class="hero-tile-label">T0 — 0h</span>
-      </div>
-      <div class="hero-tile">
-        <img src="./EsosomiT1.png" alt="Confocal microscopy T1 — 6 hours">
-        <div class="hero-tile-overlay"></div>
-        <span class="hero-tile-label">T1 — 6h</span>
-      </div>
-      <div class="hero-tile">
-        <img src="./EsosomiT2.png" alt="Confocal microscopy T2 — 24 hours">
-        <div class="hero-tile-overlay"></div>
-        <span class="hero-tile-label">T2 — 24h</span>
-      </div>
-      <div class="hero-tile">
-        <img src="./EsosomiT3.png" alt="Confocal microscopy T3 — 48 hours">
-        <div class="hero-tile-overlay"></div>
-        <span class="hero-tile-label">T3 — 48h</span>
-      </div>
-    </div>
-    <div class="hero-text reveal">
-      <p class="hero-subline">Advanced 3D biological testing for cosmetic active ingredients</p>
-      <span class="hero-eyebrow">Spin-off University of Bologna · IRCCS Rizzoli</span>
+
+  <!-- Single full-width image with hover blur + slogan overlay -->
+  <div class="hero-banner reveal" aria-label="Confocal microscopy time-lapse T0–T3">
+    <img src="./T0-T3merged.png"
+         alt="Confocal microscopy time-lapse from T0 (0h) to T3 (48h) — exosome uptake in 3D spheroid">
+    <div class="hero-banner-overlay" aria-hidden="true">
+      <span class="hero-banner-slogan">Beauty Backed by Science</span>
     </div>
   </div>
+
+  <!-- Sub-text below image -->
+  <div class="hero-sub reveal reveal-delay-1">
+    <p class="hero-subline">Advanced 3D biological testing for cosmetic active ingredients</p>
+    <span class="hero-eyebrow">Spin-off University of Bologna · IRCCS Rizzoli</span>
+  </div>
+
 </section>
 
 <!-- ═══════════════════════════════════════════════
@@ -1032,7 +1007,7 @@
         </p>
         <p>
           By combining advanced 3D biology, live imaging, and quantitative analysis, we help cosmetic
-          brands, ingredient manufacturers, and R&D laboratories generate robust efficacy data,
+          brands, ingredient manufacturers, and R&amp;D laboratories generate robust efficacy data,
           accelerate product development, and strengthen scientific claim substantiation.
         </p>
       </div>
@@ -1135,9 +1110,9 @@
           <span class="pkg-marker">Fibroblast activity</span>
         </div>
         <div class="pkg-modes" onclick="event.stopPropagation()">
-          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Confocal</button>
-          <button class="pkg-mode-btn" data-mode="confocal" aria-label="Molecular / Confocal mode">
-            + Molecular 
+          <button class="pkg-mode-btn" data-mode="standard" aria-label="Confocal imaging — always included" title="Confocal imaging is always included">Confocal</button>
+          <button class="pkg-mode-btn" data-mode="confocal" aria-label="Add Molecular add-on">
+            + Molecular
             <span class="tooltip" role="tooltip">Includes confocal imaging and molecular biomarker quantification (ELISA/qPCR)</span>
           </button>
         </div>
@@ -1155,9 +1130,9 @@
           <span class="pkg-marker">TNF-α</span>
         </div>
         <div class="pkg-modes" onclick="event.stopPropagation()">
-          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Confocal</button>
-          <button class="pkg-mode-btn" data-mode="confocal" aria-label="Molecular / Confocal mode">
-            + Molecular 
+          <button class="pkg-mode-btn" data-mode="standard" aria-label="Confocal imaging — always included" title="Confocal imaging is always included">Confocal</button>
+          <button class="pkg-mode-btn" data-mode="confocal" aria-label="Add Molecular add-on">
+            + Molecular
             <span class="tooltip" role="tooltip">Includes confocal imaging and molecular biomarker quantification (ELISA/qPCR)</span>
           </button>
         </div>
@@ -1166,15 +1141,15 @@
       <!-- ANTI-OXIDATION -->
       <div class="pkg-card" data-pkg="anti-oxidation" role="checkbox" aria-checked="false" tabindex="0">
         <span class="pkg-check" aria-hidden="true">✓</span>
-        <div class="pkg-icon"><img width="32" height="32" src="https://img.icons8.com/external-outline-black-m-oki-orlando/32/external-oxidation-chemistry-outline-black-m-oki-orlando.png" alt="external-oxidation-chemistry-outline-black-m-oki-orlando"/></div>
+        <div class="pkg-icon"><img width="32" height="32" src="https://img.icons8.com/external-outline-black-m-oki-orlando/32/external-oxidation-chemistry-outline-black-m-oki-orlando.png" alt="oxidation icon"/></div>
         <div class="pkg-name">Anti-Oxidation</div>
         <div class="pkg-desc">Measure reduction of reactive oxygen species in a 3D biological model</div>
         <div class="pkg-markers">
           <span class="pkg-marker">ROS reduction</span>
         </div>
         <div class="pkg-modes" onclick="event.stopPropagation()">
-          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Confocal</button>
-          <button class="pkg-mode-btn" data-mode="confocal" aria-label="Molecular / Confocal mode">
+          <button class="pkg-mode-btn" data-mode="standard" aria-label="Confocal imaging — always included" title="Confocal imaging is always included">Confocal</button>
+          <button class="pkg-mode-btn" data-mode="confocal" aria-label="Add Molecular add-on">
             + Molecular
             <span class="tooltip" role="tooltip">Includes confocal imaging and molecular biomarker quantification (ELISA/qPCR)</span>
           </button>
@@ -1184,7 +1159,7 @@
       <!-- EXOSOME -->
       <div class="pkg-card" data-pkg="exosome" role="checkbox" aria-checked="false" tabindex="0">
         <span class="pkg-check" aria-hidden="true">✓</span>
-        <div class="pkg-icon"><img width="32" height="32" src="https://img.icons8.com/external-dreamstale-lineal-dreamstale/32/external-science-science-dreamstale-lineal-dreamstale-3.png" alt="external-science-science-dreamstale-lineal-dreamstale-3"/></div>
+        <div class="pkg-icon"><img width="32" height="32" src="https://img.icons8.com/external-dreamstale-lineal-dreamstale/32/external-science-science-dreamstale-lineal-dreamstale-3.png" alt="science icon"/></div>
         <div class="pkg-name">Exosome Package</div>
         <div class="pkg-desc">Dedicated panel for delivery systems and next-generation vesicular actives</div>
         <div class="pkg-markers">
@@ -1192,8 +1167,8 @@
           <span class="pkg-marker">Penetration depth</span>
         </div>
         <div class="pkg-modes" onclick="event.stopPropagation()">
-          <button class="pkg-mode-btn active" data-mode="standard" aria-label="Standard mode">Confocal</button>
-          <button class="pkg-mode-btn" data-mode="confocal" aria-label="Molecular / Confocal mode">
+          <button class="pkg-mode-btn" data-mode="standard" aria-label="Confocal imaging — always included" title="Confocal imaging is always included">Confocal</button>
+          <button class="pkg-mode-btn" data-mode="confocal" aria-label="Add Molecular add-on">
             + Molecular
             <span class="tooltip" role="tooltip">Includes confocal imaging and molecular biomarker quantification (ELISA/qPCR)</span>
           </button>
@@ -1336,11 +1311,11 @@
       <p class="section-subline">Complete the form below and our team will be in touch within one business day.</p>
     </div>
     <div class="iframe-wrap reveal reveal-delay-1">
-  <div class="form-header">
-    <img src="./logo-full.png" alt="DeepInSkin Logo">
-    <h3>DeepInSkin Analysis Request</h3>
-    <p>Please provide your details and our lab will contact you shortly.</p>
-    </div>
+      <div class="form-header">
+        <img src="./logo-full.png" alt="DeepInSkin Logo">
+        <h3>DeepInSkin Analysis Request</h3>
+        <p>Please provide your details and our lab will contact you shortly.</p>
+      </div>
       <iframe
         src="https://docs.google.com/forms/d/e/1FAIpQLSe4U2gkDTqpkOthH3srTNJ7y8qaPAHwKSpsVinvGvNCXm122w/viewform?embedded=true"
         width="100%"
@@ -1431,14 +1406,22 @@
     card.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard(card); }
     });
-    card.querySelectorAll('.pkg-mode-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+
+    // Confocal button: permanently active, clicking does nothing
+    const confocalBtn = card.querySelector('.pkg-mode-btn[data-mode="standard"]');
+    if (confocalBtn) {
+      confocalBtn.addEventListener('click', e => e.stopPropagation());
+    }
+
+    // Molecular button: independent checkbox add-on — does NOT deselect Confocal
+    const molecularBtn = card.querySelector('.pkg-mode-btn[data-mode="confocal"]');
+    if (molecularBtn) {
+      molecularBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        card.querySelectorAll('.pkg-mode-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        molecularBtn.classList.toggle('active');
         updateSummary();
       });
-    });
+    }
   });
 
   function toggleCard(card) {
@@ -1449,22 +1432,26 @@
 
   function updateSummary() {
     const nameMap = {
-      'anti-aging': 'Anti-Aging',
+      'anti-aging':        'Anti-Aging',
       'anti-inflammatory': 'Anti-Inflammatory',
-      'anti-oxidation': 'Anti-Oxidation',
-      'exosome': 'Exosome'
+      'anti-oxidation':    'Anti-Oxidation',
+      'exosome':           'Exosome'
     };
     const selected = [...document.querySelectorAll('.pkg-card.selected')];
     const selectedNames = selected.map(c => nameMap[c.dataset.pkg] || c.dataset.pkg);
+
+    // Confocal is always on; Molecular is an add-on
     const modes = selected.map(c => {
-      const activeBtn = c.querySelector('.pkg-mode-btn.active');
-      return activeBtn && activeBtn.dataset.mode === 'confocal' ? 'Molecular/Confocal' : 'Standard';
+      const molBtn = c.querySelector('.pkg-mode-btn[data-mode="confocal"]');
+      return (molBtn && molBtn.classList.contains('active'))
+        ? 'Confocal + Molecular'
+        : 'Confocal';
     });
 
-    const sl = document.getElementById('selectedList');
-    const ml = document.getElementById('modeList');
-    sl.textContent = selectedNames.length ? selectedNames.join(', ') : 'none';
-    ml.textContent = modes.length ? [...new Set(modes)].join(' + ') : '—';
+    document.getElementById('selectedList').textContent =
+      selectedNames.length ? selectedNames.join(', ') : 'none';
+    document.getElementById('modeList').textContent =
+      modes.length ? [...new Set(modes)].join(' / ') : '—';
   }
 
   // ── TIMELINE ────────────────────────────────────
@@ -1478,7 +1465,7 @@
 
   function isWorkingDay(date) {
     const d = date.getDay();
-    return d !== 0 && d !== 5 && d !== 6; // not Sun, Fri, Sat
+    return d !== 0 && d !== 5 && d !== 6;
   }
 
   function addBusinessDays(date, n) {
@@ -1504,25 +1491,25 @@
   document.getElementById('shippingDate').addEventListener('change', function () {
     const val = this.value;
     if (!val) return;
-    const [y,m,day] = val.split('-').map(Number);
-    const shipping  = new Date(y, m - 1, day);
-    const warning   = document.getElementById('timelineWarning');
-    const result    = document.getElementById('timelineResult');
-    const rows      = document.getElementById('timelineRows');
+    const [y, m, day] = val.split('-').map(Number);
+    const shipping = new Date(y, m - 1, day);
+    const warning  = document.getElementById('timelineWarning');
+    const result   = document.getElementById('timelineResult');
+    const rows     = document.getElementById('timelineRows');
 
     const nonWorking = !isWorkingDay(shipping);
     warning.classList.toggle('visible', nonWorking);
 
     const effectiveShipping = nonWorking ? nextWorkingDay(shipping) : shipping;
-    const arrival    = addBusinessDays(effectiveShipping, 1);
-    const analysisStart = arrival;
+    const arrival        = addBusinessDays(effectiveShipping, 1);
+    const analysisStart  = arrival;
     const reportDelivery = addBusinessDays(analysisStart, 3);
 
     const steps = [
-      { label: 'Shipping date',          date: effectiveShipping, active: false },
-      { label: 'Estimated lab arrival',  date: arrival,           active: false },
-      { label: 'Analysis start',         date: analysisStart,     active: false },
-      { label: 'Report delivery',        date: reportDelivery,    active: true  }
+      { label: 'Shipping date',         date: effectiveShipping, active: false },
+      { label: 'Estimated lab arrival', date: arrival,           active: false },
+      { label: 'Analysis start',        date: analysisStart,     active: false },
+      { label: 'Report delivery',       date: reportDelivery,    active: true  }
     ];
 
     rows.innerHTML = steps.map(s => `
@@ -1543,19 +1530,15 @@
     const icon    = document.getElementById('downloadIcon');
     const errEl   = document.getElementById('downloadError');
 
-    // Trigger the loading UI
     btn.disabled = true;
     spinner.style.display = 'block';
     icon.style.display = 'none';
     errEl.classList.remove('visible');
 
-    // Use setTimeout to simulate a quick "processing" delay for the user interface, 
-    // then trigger the download of the local static file.
     setTimeout(() => {
       try {
         const a = document.createElement('a');
-        // Make sure you upload a file named exactly this to your GitHub repository
-        a.href = './DeepInSkin_Demo_Report.pdf'; 
+        a.href = './DeepInSkin_Demo_Report.pdf';
         a.download = 'DeepInSkin_Demo_Report.pdf';
         document.body.appendChild(a);
         a.click();
@@ -1564,12 +1547,11 @@
         errEl.textContent = 'Download unavailable. Please contact us directly.';
         errEl.classList.add('visible');
       } finally {
-        // Reset the UI
         btn.disabled = false;
         spinner.style.display = 'none';
         icon.style.display = 'block';
       }
-    }, 800); // 800 millisecond delay
+    }, 800);
   }
 </script>
 </body>
